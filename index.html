@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Potato Classifier</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+<body>
+    <div class="container">
+        <div class="intro">
+            <div class="text">
+                <h1><span>Identify</span> the Potato </h1>
+                <p>Upload an image of a potato and our AI will classify it in seconds. Try it now!</p>
+            </div>
+            <div class="image">
+                {% if image_file %}
+                    <img src="{{ url_for('static', filename=image_file) }}" alt="Uploaded Image" class="predicted-img">
+                {% endif %}
+            </div>
+        </div>
+
+        <form action="/predict" method="post" enctype="multipart/form-data" class="upload-box">
+            <label for="file-upload" class="custom-file-upload">
+                <input id="file-upload" type="file" name="image" accept="image/*" required onchange="previewImage(event)">
+                <span>📷 Drop image or click to select<br><small>(JPG, PNG, BMP)</small></span>
+            </label>
+            <input type="submit" value="Predict" class="btn">
+            <img id="preview-img" class="preview-img" style="display:none;" />
+        </form>
+
+        {% if prediction %}
+            <div class="result">
+                <h2>Prediction: <span>{{ prediction }}</span></h2>
+            </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imgTag = document.getElementById("preview-img");
+                    imgTag.src = e.target.result;
+                    imgTag.style.display = "block";
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+</body>
+</html>
